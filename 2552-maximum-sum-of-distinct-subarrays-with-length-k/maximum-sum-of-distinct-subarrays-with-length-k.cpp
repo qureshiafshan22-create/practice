@@ -1,44 +1,39 @@
-class Solution {
-public:
-    long long maximumSubarraySum(vector<int>& nums, int k) {
+class Solution { 
+public: 
+    long long maximumSubarraySum(vector<int>& nums, int k) { 
 
-        vector<int> freq(100001, 0);
+        long long sum = 0; 
+        unordered_set<int> st; 
+        long long result = 0; 
+ 
+        int i = 0, j = 0; 
+        int n = nums.size(); 
 
-        long long sum = 0;
-        long long ans = 0;
+        while(j < n) { 
 
-        int left = 0;
-        int distinct = 0;
+            //incase if there is j present already in set 
+            while(st.count(nums[j])) { 
+                sum -= nums[i]; 
+                st.erase(nums[i]); 
+                i++; 
+            } 
+ 
+            //agr nhi present h j in the set then 
+            sum += nums[j]; 
+            st.insert(nums[j]); 
 
-        for(int right = 0; right < nums.size(); right++) {
+            //agr sare element hi unique h in window and window size bhii ho gya pura then 
+            if(j - i + 1 == k) { 
+                result = max(sum, result); 
 
-            // Add nums[right]
-            if(freq[nums[right]] == 0) {
-                distinct++;
-            }
+                sum -= nums[i]; 
+                st.erase(nums[i]); 
+                i++; 
+            } 
 
-            freq[nums[right]]++;
-            sum += nums[right];
+            j++; 
+        } 
 
-            // Remove element if window > k
-            if(right - left + 1 > k) {
-
-                freq[nums[left]]--;
-                sum -= nums[left];
-
-                if(freq[nums[left]] == 0) {
-                    distinct--;
-                }
-
-                left++;
-            }
-
-            // Check valid window
-            if(right - left + 1 == k && distinct == k) {
-                ans = max(ans, sum);
-            }
-        }
-
-        return ans;
-    }
+        return result;
+    } 
 };
